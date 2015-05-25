@@ -1,4 +1,4 @@
-# storm
+# Storm
 Quakeworld mod - STORM
 
 This is my little project to make a MOD for Quakeworld, with gameplay like Shootmania's STORM. 
