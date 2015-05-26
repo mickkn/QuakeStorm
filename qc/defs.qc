@@ -735,7 +735,7 @@ void(vector where, float set) multicast = #82;  // sends the temp message to a s
 void(vector tdest, float tspeed, void() func) SUB_CalcMove;
 void(entity ent, vector tdest, float tspeed, void() func) SUB_CalcMoveEnt;
 void(vector destangle, float tspeed, void() func) SUB_CalcAngleMove;
-void()  SUB_CalcMoveDone;
+void() SUB_CalcMoveDone;
 void() SUB_CalcAngleMoveDone;
 void() SUB_Null;
 void() SUB_UseTargets;
@@ -751,4 +751,14 @@ float (entity e, float healamount, float ignore) T_Heal; // health function
 
 float(entity targ, entity inflictor) CanDamage;
 
+/*
+	STORM MENU
+*/
 
+.float menu;
+float		MENU_OFF                	= 0;
+float		MENU_SELECT_TEAM		= 8; // Select your team
+float		MENU_SELECT_EXIT		= 9; // Exits the menu
+float		NO_TEAM						= 0;
+float		ATTACKER_TEAM			= 1;
+float		DEFFENDER_TEAM			= 2;

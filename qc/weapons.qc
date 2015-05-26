@@ -47,6 +47,9 @@ void() W_Precache =
 	precache_sound ("weapons/grenade.wav"); // grenade launcher
 	precache_sound ("weapons/bounce.wav");          // grenade bounce
 	precache_sound ("weapons/shotgn2.wav"); // super shotgun
+	
+	// STORM
+	precache_sound("weapons/railgun.wav"); // attacker
 };
 
 float() crandom =
@@ -537,8 +540,8 @@ void() W_FireRocket =
 // set newmis speed     
 
 	makevectors (self.v_angle);
-	newmis.velocity = aim(self, 1000);
-	newmis.velocity = newmis.velocity * 800;
+	newmis.velocity = aim(self, 600);
+	newmis.velocity = newmis.velocity * 600;
 	newmis.angles = vectoangles(newmis.velocity);
 	
 	newmis.touch = T_MissileTouch;
@@ -622,9 +625,11 @@ void () W_FireLaser = {
     self.ammo_nails = self.ammo_nails - 1;
     self.currentammo = self.ammo_nails;
 
+	sound (self, CHAN_WEAPON, "weapons/railgun.wav", 1, ATTN_NORM);
+
     makevectors(self.v_angle);
     org = self.origin + v_forward * 8;
-    vec = aim(self, 10000);
+    vec = aim(self, 100000);
     vec = normalize(vec);
 
     newmis = spawn();
@@ -642,7 +647,7 @@ void () W_FireLaser = {
     newmis.angles = vectoangles(newmis.velocity);
     newmis.oldorigin = newmis.velocity;
 
-    newmis.nextthink = time + 5;
+    newmis.nextthink = time + 10;
     newmis.think = SUB_Remove;
     newmis.touch = LaserBolt_Touch;
 };
@@ -1197,6 +1202,8 @@ void() W_Attack =
 
 	if (!W_CheckNoAmmo ())
 		return;
+	if(!self.team) // disable attack if observer STORM
+		return;
 
 	makevectors     (self.v_angle);                 // calculate forward angle for velocity
 	self.show_hostile = time + 1;   // wake monsters up
@@ -1549,7 +1556,14 @@ void() ImpulseCommands =
 		ServerflagsCommand ();
 	if (self.impulse == 12)
 		CycleWeaponReverseCommand ();
-
+		
+	// STORM MENU	
+	if (self.impulse == 20) // Begin Michl's menu code (October 24th, 1999)
+        MenuToggle ();
+    if (self.impulse == 21)
+        MenuUp ();
+    if (self.impulse == 22)
+        MenuDown (); // End Michl's menu code (October 24th, 1999)
 	self.impulse = 0;
 };
 

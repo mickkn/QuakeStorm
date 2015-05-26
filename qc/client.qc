@@ -411,6 +411,7 @@ entity() SelectSpawnPoint =
 };
 void() DecodeLevelParms;
 void() PlayerDie;
+void() PutObserverInServer;
 
 /*
 ===========
@@ -476,10 +477,13 @@ PutClientInServer
 called each time a player enters a new level
 ============
 */
-void() PutClientInServer =
-{
-	local   entity spot;
-	local 	string	s;
+void() PutClientInServer = {//Koolio,The normal putclientinserver
+	if (self.team == NO_TEAM) { // if you don't have a team selected 
+		PutObserverInServer(); // Run the observer func 
+	return; // and forget the rest 
+	}
+	local   	entity spot;
+	local		string s;
 
 	self.classname = "player";
 	self.health = 100;
@@ -516,10 +520,10 @@ void() PutClientInServer =
 	self.angles = spot.angles;
 	self.fixangle = TRUE;           // turn this way immediately
 
-// oh, this is a hack!
+// oh, this is a hack! 
 	setmodel (self, "progs/eyes.mdl");
 	modelindex_eyes = self.modelindex;
-
+	
 	setmodel (self, "progs/player.mdl");
 	modelindex_player = self.modelindex;
 
@@ -924,9 +928,24 @@ void() PlayerPreThink =
 		IntermissionThink ();   // otherwise a button could be missed between
 		return;                                 // the think tics
 	}
-
+	
+	//Koolio, makes you an observer if you don't have a team
+	//or makes you spawn if you do have a team
+	
+	//the classname check is to prevent keeping respawning all the time. 
+	//Try removing the classname check to see what I mean
+	if (self.team == NO_TEAM && self.classname != "observer") //This should explain itself
+		PutObserverInServer(); //Make me an observer
+	if (self.team != NO_TEAM && self.classname != "player") //And vise versa
+		PutClientInServer();
+	
 	if (self.view_ofs == '0 0 0')
 		return;         // intermission or finale
+	
+	// STORM MENU
+    if (self.menu != 0)   // Quite simply, displays the menu (over and over)
+    	MainMenu ();  // if it is turned on.
+
 
 	makevectors (self.v_angle);             // is this still used
 
@@ -1197,7 +1216,8 @@ void() ClientConnect =
 {
 	bprint (PRINT_HIGH, self.netname);
 	bprint (PRINT_HIGH, " entered the game\n");
-	// STORM welcome message
+	// STORM welcome message and observer
+	self.team = NO_TEAM;
 	centerprint(self, "Welcome to STORM!");
 	
 // a client connecting during an intermission can cause problems
