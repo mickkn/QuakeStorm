@@ -363,35 +363,105 @@ void() W_FireSuperShotgun =
 	FireBullets (14, dir, '0.14 0.08 0');
 };
 
+// ORIGINAL ROCKET
+
+// void() T_MissileTouch =
+// {
+// 	local float     damg;
+// 
+// 	if (other == self.owner)
+// 		return;         // don't explode on owner
+// 
+// 	if (self.voided) {
+// 		return;
+// 	}
+// 	self.voided = 1;
+// 
+// 	if (pointcontents(self.origin) == CONTENT_SKY)
+// 	{
+// 		remove(self);
+// 		return;
+// 	}
+// 
+// 	damg = 100 + random()*20;
+// 	
+// 	if (other.health)
+// 	{
+// 		other.deathtype = "rocket";
+// 		T_Damage (other, self, self.owner, damg );
+// 	}
+// 
+// 	// don't do radius damage to the other, because all the damage
+// 	// was done in the impact
+// 
+// 
+// 	T_RadiusDamage (self, self.owner, 120, other, "rocket");
+// 
+// //  sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
+// 	self.origin = self.origin - 8 * normalize(self.velocity);
+// 
+// 	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+// 	WriteByte (MSG_MULTICAST, TE_EXPLOSION);
+// 	WriteCoord (MSG_MULTICAST, self.origin_x);
+// 	WriteCoord (MSG_MULTICAST, self.origin_y);
+// 	WriteCoord (MSG_MULTICAST, self.origin_z);
+// 	multicast (self.origin, MULTICAST_PHS);
+// 
+// 	remove(self);
+// };
+// 
+// 
+// 
+// /*
+// ================
+// W_FireRocket
+// ================
+// */
+// void() W_FireRocket =
+// {
+// 	if (deathmatch != 4)
+// 		self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
+// 	
+// 	sound (self, CHAN_WEAPON, "weapons/sgun1.wav", 1, ATTN_NORM);
+// 
+// 	msg_entity = self;
+// 	WriteByte (MSG_ONE, SVC_SMALLKICK);
+// 
+// 	newmis = spawn ();
+// 	newmis.owner = self;
+// 	newmis.movetype = MOVETYPE_FLYMISSILE;
+// 	newmis.solid = SOLID_BBOX;
+// 		
+// // set newmis speed     
+// 
+// 	makevectors (self.v_angle);
+// 	newmis.velocity = aim(self, 1000);
+// 	newmis.velocity = newmis.velocity * 1000;
+// 	newmis.angles = vectoangles(newmis.velocity);
+// 	
+// 	newmis.touch = T_MissileTouch;
+// 	newmis.voided = 0;
+// 	
+// // set newmis duration
+// 	newmis.nextthink = time + 5;
+// 	newmis.think = SUB_Remove;
+// 	newmis.classname = "rocket";
+// 
+// 	setmodel (newmis, "progs/missile.mdl");
+// 	setsize (newmis, '0 0 0', '0 0 0');             
+// 	setorigin (newmis, self.origin + v_forward*8 + '0 0 16');
+// };
 
 /*
-==============================================================================
-
-ROCKETS
-
-==============================================================================
+========================================================
+ Storm
+ 
+ Weapons and functions for the DEFFENDER
+========================================================
 */
-
 void() T_MissileTouch =
 {
 	local float     damg;
-
-//	if (deathmatch == 4)
-//	{
-//	if ( ((other.weapon == 32) || (other.weapon == 16)))
-//		{	
-//			if (random() < 0.1)
-//			{
-//				if (other != world)
-//				{
-//	//				bprint (PRINT_HIGH, "Got here\n");
-//					other.deathtype = "blaze";
-//					T_Damage (other, self, self.owner, 1000 );
-//					T_RadiusDamage (self, self.owner, 1000, other);
-//				}
-//			}
-//		}	
-//	}
 
 	if (other == self.owner)
 		return;         // don't explode on owner
@@ -433,14 +503,22 @@ void() T_MissileTouch =
 
 	remove(self);
 };
-
-
-
 /*
 ================
 W_FireRocket
 ================
 */
+.float rspeed; // counter for how many times the rocket changes speed
+void() RocketSpeedChange =
+{
+	if (self.rspeed < 10) // 10 is the max speed changes
+	{
+		self.velocity = self.velocity * 2; // up the speed by 2x
+		self.rspeed = self.rspeed + 1; // up the counter to tell it to stop
+		self.nextthink = time + 0.5; // redo this function
+	}
+};
+
 void() W_FireRocket =
 {
 	if (deathmatch != 4)
@@ -460,20 +538,113 @@ void() W_FireRocket =
 
 	makevectors (self.v_angle);
 	newmis.velocity = aim(self, 1000);
-	newmis.velocity = newmis.velocity * 1000;
+	newmis.velocity = newmis.velocity * 800;
 	newmis.angles = vectoangles(newmis.velocity);
 	
 	newmis.touch = T_MissileTouch;
 	newmis.voided = 0;
 	
 // set newmis duration
-	newmis.nextthink = time + 5;
-	newmis.think = SUB_Remove;
+	newmis.nextthink = time + 0.01;
+	newmis.think = RocketSpeedChange;
 	newmis.classname = "rocket";
 
 	setmodel (newmis, "progs/missile.mdl");
 	setsize (newmis, '0 0 0', '0 0 0');             
 	setorigin (newmis, self.origin + v_forward*8 + '0 0 16');
+};
+
+/*
+========================================================
+ Storm
+ 
+ Weapons and functions for the ATTACKER
+========================================================
+*/
+
+void () LaserBolt_Touch;
+void () LaserBolt_Think = {
+    self.solid = SOLID_TRIGGER;
+    self.movetype = MOVETYPE_FLYMISSILE;
+    self.velocity = self.oldorigin;
+    self.touch = LaserBolt_Touch;
+    setmodel(self, "progs/e_spike2.mdl");
+    self.nextthink = time + 1;
+    self.think = SUB_Remove;
+};
+
+/*
+================
+ Laserbolt touch function. Just moves through the player and comes out
+ the other side.
+================
+*/
+
+void () LaserBolt_Touch = {
+    local vector org;
+
+    if (other == self.owner) {
+        return;
+    }
+    if ((other == self.enemy) && (self.enemy != world)) {
+        return;
+    }
+//    if (pointcontents(self.origin) == CONTENT_SKY) {
+//        dremove(self);
+//        return;
+//    }
+    org = self.origin - 8 * normalize(self.velocity);
+    if (other.health) {
+        SpawnBlood(org, 15);
+//        deathmsg = DMSG_LASERBOLT;
+//        TF_T_Damage(other, self, self.enemy, 25, 2, TF_TD_ELECTRICITY);
+        self.velocity = self.oldorigin;
+        self.owner = other;
+        setmodel(self, string_null);
+        self.touch = SUB_Null;
+        self.nextthink = time + 0.1;
+        self.think = LaserBolt_Think;
+        return;
+    } else {
+        WriteByte(MSG_MULTICAST, SVC_TEMPENTITY);
+        WriteByte(MSG_MULTICAST, TE_SPIKE);
+        WriteCoord(MSG_MULTICAST, self.origin_x);
+        WriteCoord(MSG_MULTICAST, self.origin_y);
+        WriteCoord(MSG_MULTICAST, self.origin_z);
+        multicast(self.origin, MULTICAST_PHS);
+    }
+    remove(self);
+};
+
+void () W_FireLaser = {
+    local vector vec, org;
+
+    self.ammo_nails = self.ammo_nails - 1;
+    self.currentammo = self.ammo_nails;
+
+    makevectors(self.v_angle);
+    org = self.origin + v_forward * 8;
+    vec = aim(self, 10000);
+    vec = normalize(vec);
+
+    newmis = spawn();
+    newmis.owner = self;
+    newmis.enemy = self;
+    newmis.movetype = MOVETYPE_FLYMISSILE;
+    newmis.solid = SOLID_TRIGGER;
+
+    setmodel(newmis, "progs/e_spike1.mdl");
+    setsize(newmis, '0 0 0', '0 0 0');
+
+    setorigin(newmis, org + '0 0 16');
+
+    newmis.velocity = vec * 100000;
+    newmis.angles = vectoangles(newmis.velocity);
+    newmis.oldorigin = newmis.velocity;
+
+    newmis.nextthink = time + 5;
+    newmis.think = SUB_Remove;
+    newmis.touch = LaserBolt_Touch;
 };
 
 /*
@@ -1048,7 +1219,7 @@ void() W_Attack =
 	{
 		player_shot1 ();
 		self.attack_finished = time + 0.5;
-		W_FireShotgun ();
+		W_FireLaser ();
 	}
 	else if (self.weapon == IT_SUPER_SHOTGUN)
 	{
@@ -1423,5 +1594,3 @@ void() SuperDamageSound =
 	}
 	return;
 };
-
-

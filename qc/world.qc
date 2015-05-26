@@ -308,6 +308,15 @@ void() worldspawn =
 	precache_model ("progs/v_nail2.mdl");
 	precache_model ("progs/v_rock2.mdl");
 
+/* 
+	==========
+	STORM MODELS
+	==========
+*/ 
+
+	precache_model("progs/e_spike1.mdl");
+	precache_model("progs/e_spike2.mdl");
+	
 	precache_model ("progs/bolt.mdl");              // for lightning gun
 	precache_model ("progs/bolt2.mdl");             // for lightning gun
 	precache_model ("progs/bolt3.mdl");             // for boss shock
