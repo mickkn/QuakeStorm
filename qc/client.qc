@@ -337,78 +337,165 @@ SelectSpawnPoint
 Returns the entity to spawn at
 ============
 */
-entity() SelectSpawnPoint =
-{
-	local   entity spot, newspot, thing;
-	local   float   numspots, totalspots;
-	local   float   rnum, pcount;
-	local   float   rs;
-	local entity spots;
+// entity() SelectSpawnPoint =
+// {
+// 	local   entity spot, newspot, thing;
+// 	local   float   numspots, totalspots;
+// 	local   float   rnum, pcount;
+// 	local   float   rs;
+// 	local entity spots;
+// 
+// 	numspots = 0;
+// 	totalspots = 0;
+// 
+// // testinfo_player_start is only found in regioned levels
+// 	spot = find (world, classname, "testplayerstart");
+// 	if (spot)
+// 		return spot;
+// 		
+// // choose a info_player_deathmatch point
+// 
+// // ok, find all spots that don't have players nearby
+// 
+// 	spots = world;
+// 	spot = find (world, classname, "info_player_deathmatch");       
+// 	while (spot)
+// 	{
+// 		totalspots = totalspots + 1;
+// 
+// 		thing=findradius(spot.origin, 84);
+// 		pcount=0;               
+// 		while (thing)
+// 		{
+// 			if (thing.classname == "player")
+// 				pcount=pcount + 1;                      
+// 			thing=thing.chain;      
+// 		}
+// 		if (pcount == 0) {
+// 			spot.goalentity = spots;
+// 			spots = spot;
+// 			numspots = numspots + 1;
+// 		}
+// 
+// 		// Get the next spot in the chain
+// 		spot = find (spot, classname, "info_player_deathmatch");                
+// 	}
+// 	totalspots=totalspots - 1;
+// 	if (!numspots) {
+// 		// ack, they are all full, just pick one at random
+// //		bprint (PRINT_HIGH, "Ackk! All spots are full. Selecting random spawn spot\n");
+// 		totalspots = rint((random() * totalspots));
+// 		spot = find (world, classname, "info_player_deathmatch");       
+// 		while (totalspots > 0) {
+// 			totalspots = totalspots - 1;
+// 			spot = find (spot, classname, "info_player_deathmatch");
+// 		}
+// 		return spot;
+// 	}
+// 		
+// // We now have the number of spots available on the map in numspots
+// 
+// 	// Generate a random number between 1 and numspots
+// 
+// 	numspots = numspots - 1;
+// 	
+// 	numspots = rint((random() * numspots ) );
+// 
+// 	spot = spots;
+// 	while (numspots > 0) {
+// 		spot = spot.goalentity;
+// 		numspots = numspots - 1;
+// 	}
+// 	return spot;
+// 
+// };
 
-	numspots = 0;
-	totalspots = 0;
-
+entity() SelectSpawnPoint = {
+	local	entity spot;
+	local	entity thing;
+	local	float  pcount;
+	
 // testinfo_player_start is only found in regioned levels
 	spot = find (world, classname, "testplayerstart");
 	if (spot)
 		return spot;
 		
 // choose a info_player_deathmatch point
-
-// ok, find all spots that don't have players nearby
-
-	spots = world;
-	spot = find (world, classname, "info_player_deathmatch");       
-	while (spot)
+	//if (coop) Koolio, no coop play, we need coop starts for the counters
+	//{
+	//	lastspawn = find(lastspawn, classname, "info_player_coop");
+	//	if (lastspawn == world)
+	//		lastspawn = find (lastspawn, classname, "info_player_start");
+	//	if (lastspawn != world)
+	//		return lastspawn;
+	//}
+	//else 
+	if ((deathmatch) && (self.team == ATTACKER_TEAM)) // <-- changed that
 	{
-		totalspots = totalspots + 1;
-
-		thing=findradius(spot.origin, 84);
-		pcount=0;               
-		while (thing)
+		spot = lastspawn;
+		while (1)
 		{
-			if (thing.classname == "player")
-				pcount=pcount + 1;                      
-			thing=thing.chain;      
+			spot = find(spot, classname, "info_player_deathmatch");
+			if (spot != world)
+			{
+				if (spot == lastspawn)
+					return lastspawn;
+				pcount = 0;
+				thing = findradius(spot.origin, 32);
+				while(thing)
+				{
+					if (thing.classname == "player")
+						pcount = pcount + 1;
+					thing = thing.chain;
+				}
+				if (pcount == 0)
+				{
+					lastspawn = spot;
+					return spot;
+				}
+			}
 		}
-		if (pcount == 0) {
-			spot.goalentity = spots;
-			spots = spot;
-			numspots = numspots + 1;
-		}
-
-		// Get the next spot in the chain
-		spot = find (spot, classname, "info_player_deathmatch");                
 	}
-	totalspots=totalspots - 1;
-	if (!numspots) {
-		// ack, they are all full, just pick one at random
-//		bprint (PRINT_HIGH, "Ackk! All spots are full. Selecting random spawn spot\n");
-		totalspots = rint((random() * totalspots));
-		spot = find (world, classname, "info_player_deathmatch");       
-		while (totalspots > 0) {
-			totalspots = totalspots - 1;
-			spot = find (spot, classname, "info_player_deathmatch");
+	else if ((deathmatch) && (self.team == DEFFENDER_TEAM)) // <-- changed that
+	{
+		spot = lastspawn;
+		while (1)
+		{
+			spot = find(spot, classname, "info_player_coop");
+			if (spot != world)
+			{
+				if (spot == lastspawn)
+					return lastspawn;
+				pcount = 0;
+				thing = findradius(spot.origin, 32);
+				while(thing)
+				{
+					if (thing.classname == "player")
+						pcount = pcount + 1;
+					thing = thing.chain;
+				}
+				if (pcount == 0)
+				{
+					lastspawn = spot;
+					return spot;
+				}
+			}
 		}
-		return spot;
 	}
-		
-// We now have the number of spots available on the map in numspots
 
-	// Generate a random number between 1 and numspots
-
-	numspots = numspots - 1;
+	if (serverflags) { // return with a rune to start
+		spot = find (world, classname, "info_player_start2");
+		if (spot)
+			return spot;
+	}
 	
-	numspots = rint((random() * numspots ) );
-
-	spot = spots;
-	while (numspots > 0) {
-		spot = spot.goalentity;
-		numspots = numspots - 1;
-	}
+	spot = find (world, classname, "info_player_start");
+	if (!spot)
+		error ("PutClientInServer: no info_player_start on level");
+	
 	return spot;
-
 };
+
 void() DecodeLevelParms;
 void() PlayerDie;
 void() PutObserverInServer;
@@ -480,7 +567,7 @@ called each time a player enters a new level
 void() PutClientInServer = {//Koolio,The normal putclientinserver
 	if (self.team == NO_TEAM) { // if you don't have a team selected 
 		PutObserverInServer(); // Run the observer func 
-	return; // and forget the rest 
+		return; // and forget the rest 
 	}
 	local   	entity spot;
 	local		string s;
