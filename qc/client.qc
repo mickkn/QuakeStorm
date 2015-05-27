@@ -565,7 +565,7 @@ called each time a player enters a new level
 ============
 */
 void() PutClientInServer = {//Koolio,The normal putclientinserver
-	if (self.team == NO_TEAM) { // if you don't have a team selected 
+	if (self.team == OBSERVER) { // if you don't have a team selected 
 		PutObserverInServer(); // Run the observer func 
 		return; // and forget the rest 
 	}
@@ -1021,9 +1021,9 @@ void() PlayerPreThink =
 	
 	//the classname check is to prevent keeping respawning all the time. 
 	//Try removing the classname check to see what I mean
-	if (self.team == NO_TEAM && self.classname != "observer") //This should explain itself
+	if (self.team == OBSERVER && self.classname != "observer") //This should explain itself
 		PutObserverInServer(); //Make me an observer
-	if (self.team != NO_TEAM && self.classname != "player") //And vise versa
+	if (self.team != OBSERVER && self.classname != "player") //And vise versa
 		PutClientInServer();
 	
 	if (self.view_ofs == '0 0 0')
@@ -1304,7 +1304,7 @@ void() ClientConnect =
 	bprint (PRINT_HIGH, self.netname);
 	bprint (PRINT_HIGH, " entered the game\n");
 	// STORM welcome message and observer
-	self.team = NO_TEAM;
+	self.team = OBSERVER;
 	centerprint(self, "Welcome to STORM!");
 	
 // a client connecting during an intermission can cause problems

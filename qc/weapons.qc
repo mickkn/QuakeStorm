@@ -1202,7 +1202,7 @@ void() W_Attack =
 
 	if (!W_CheckNoAmmo ())
 		return;
-	if(!self.team) // disable attack if observer STORM
+	if(self.team == OBSERVER) // disable attack if observer STORM
 		return;
 
 	makevectors     (self.v_angle);                 // calculate forward angle for velocity

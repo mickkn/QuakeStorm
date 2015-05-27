@@ -45,7 +45,7 @@ void() MainMenu =	//Koolio,The menu selection has an exit that is quite useless
 	else if (self.menu == DEFFENDER_TEAM) {
 		centerprint (self, " >Deffender\n Attacker\n Observer");
 	}
-	else if (self.menu == NO_TEAM) {
+	else if (self.menu == OBSERVER) {
 		centerprint (self, "  Deffender\n Attacker\n>Observer");
 	}
 };
@@ -80,11 +80,11 @@ void() MenuSelect = {	// selects the current menu item
         centerprint (self, "");
         MainMenu ();
     }
-    else if (self.menu == NO_TEAM) { 
+    else if (self.menu == OBSERVER) { 
         self.team = self.menu;
         bprint (PRINT_HIGH, self.netname);
         bprint (PRINT_HIGH, " is now observing\n");
-        self.skin = 0;
+        //self.skin = 0;
         //self.weaponmodel = "progs/v_shot.mdl";
         self.menu = MENU_OFF;
         centerprint (self, "");
@@ -100,8 +100,8 @@ void() MenuUp = { // scrolls through the menu
     else if (self.menu == MENU_SELECT_EXIT)
     	self.menu = MENU_SELECT_TEAM;
     else if (self.menu == DEFFENDER_TEAM)
-        self.menu = NO_TEAM;
-    else if (self.menu == NO_TEAM)
+        self.menu = OBSERVER;
+    else if (self.menu == OBSERVER)
     	self.menu = ATTACKER_TEAM;
 	else if (self.menu == ATTACKER_TEAM)
     	self.menu = DEFFENDER_TEAM;
@@ -118,8 +118,8 @@ void() MenuDown = { //Same as menu up
 	else if (self.menu == DEFFENDER_TEAM)
 		self.menu = ATTACKER_TEAM;
 	else if (self.menu == ATTACKER_TEAM)
-    	self.menu = NO_TEAM;
-    else if (self.menu == NO_TEAM)
+    	self.menu = OBSERVER;
+    else if (self.menu == OBSERVER)
     	self.menu = DEFFENDER_TEAM;
     MainMenu ();
 };

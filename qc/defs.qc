@@ -759,6 +759,13 @@ float(entity targ, entity inflictor) CanDamage;
 float		MENU_OFF                	= 0;
 float		MENU_SELECT_TEAM		= 8; // Select your team
 float		MENU_SELECT_EXIT		= 9; // Exits the menu
-float		NO_TEAM						= 0;
 float		ATTACKER_TEAM			= 1;
 float		DEFFENDER_TEAM			= 2;
+float     OBSERVER						= 3;
+
+
+/*
+	STORM TIMER
+*/
+
+void(entity client, string s, string s, string s, string s, string s, string s, string s) specialprint = #73;

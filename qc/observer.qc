@@ -2,7 +2,7 @@
 //Basically modified PutClientInServer to be more like an observer mode
 
 void() PutObserverInServer = {		//Koolio, Just like PutClientInServer
-	if (self.team != NO_TEAM) {// if you already have a team  
+	if (self.team != OBSERVER) {// if you already have a team  
 		PutClientInServer(); // And run the normal PutClientInServer
 		centerprint (self, "You have a team");
 		return; // and forget the rest 
