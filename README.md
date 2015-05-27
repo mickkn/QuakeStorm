@@ -23,3 +23,4 @@ The main idea.
   - if attacker captures (takes a time to capture the flag) he wins
   - if all defenders dies, the attacker still have to capture the flag
 5. Some rules for scoring
+6. Timer for the objective to spawn or maybe just be available to capture
