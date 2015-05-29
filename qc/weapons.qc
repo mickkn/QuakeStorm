@@ -622,15 +622,12 @@ void () LaserBolt_Touch = {
 void () W_FireLaser = {
     local vector vec, org;
 
-    self.ammo_nails = self.ammo_nails - 1;
-    self.currentammo = self.ammo_nails;
-
 	sound (self, CHAN_WEAPON, "weapons/railgun.wav", 1, ATTN_NORM);
 
     makevectors(self.v_angle);
     org = self.origin + v_forward * 8;
     vec = aim(self, 100000);
-    vec = normalize(vec);
+    //vec = normalize(vec);
 
     newmis = spawn();
     newmis.owner = self;
@@ -1198,7 +1195,8 @@ void()  player_rocket1;
 
 void() W_Attack =
 {
-	local   float   r;
+	local   	float	r;
+	local		float rl_count;	// STORM RL Delay
 
 	if (!W_CheckNoAmmo ())
 		return;
@@ -1222,10 +1220,10 @@ void() W_Attack =
 		else
 			player_axed1 ();
 	}
-	else if (self.weapon == IT_SHOTGUN)
+	else if (self.weapon == IT_SHOTGUN) // STORM attack weap
 	{
 		player_shot1 ();
-		self.attack_finished = time + 0.5;
+		self.attack_finished = time + 2;
 		W_FireLaser ();
 	}
 	else if (self.weapon == IT_SUPER_SHOTGUN)
@@ -1250,9 +1248,27 @@ void() W_Attack =
 	}
 	else if (self.weapon == IT_ROCKET_LAUNCHER)
 	{
-		player_rocket1();
-		self.attack_finished = time + 0.8;
-		W_FireRocket();
+		if(!self.storm_semi && self.storm_attack_finished1 < time) {
+			player_rocket1();
+			self.storm_semi = 1;
+			self.storm_attack_finished1 = time +3;
+			self.attack_finished = time + 0.1;
+			W_FireRocket();
+		}
+		else if(!self.storm_semi && self.storm_attack_finished2 < time) {
+			player_rocket1();
+			self.storm_semi = 1;
+			self.storm_attack_finished2 = time +3;
+			self.attack_finished = time + 0.1;
+			W_FireRocket();
+		}
+		else if(!self.storm_semi && self.storm_attack_finished3 < time) {
+			player_rocket1();
+			self.storm_semi = 1;
+			self.storm_attack_finished3 = time +3;
+			self.attack_finished = time + 0.1;
+			W_FireRocket();
+		}
 	}
 	else if (self.weapon == IT_LIGHTNING)
 	{
@@ -1581,7 +1597,12 @@ void() W_WeaponFrame =
 
 	ImpulseCommands ();
 	
-// check for attack
+	/* check for attack release*/
+	if(!self.button0) {
+		self.storm_semi = 0;
+	}
+	
+	/* check for attack */
 	if (self.button0)
 	{
 		SuperDamageSound ();

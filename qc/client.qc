@@ -591,8 +591,16 @@ void() PutClientInServer = {//Koolio,The normal putclientinserver
 
 	DecodeLevelParms ();
 	
-	W_SetCurrentAmmo ();
-
+	//W_SetCurrentAmmo ();
+	// STORM weaps
+	if(self.team == ATTACKER_TEAM) {
+		self.items = self.items | IT_ROCKET_LAUNCHER;
+		self.ammo_rockets = 255;
+	}
+	
+	if(self.team == DEFFENDER_TEAM) {
+		self.ammo_shells =255;
+	}
 	self.attack_finished = time;
 	self.th_pain = player_pain;
 	self.th_die = PlayerDie;
@@ -636,51 +644,51 @@ void() PutClientInServer = {//Koolio,The normal putclientinserver
 		rj = stof(infokey(world, "rj"));
 	}
 
-	if (deathmatch == 4)
-	{
-		self.ammo_shells = 0;
-		if (stof(infokey(world, "axe")) == 0)
-		{
-			self.ammo_nails = 255;
-			self.ammo_shells = 255;
-			self.ammo_rockets = 255;
-			self.ammo_cells = 255;
-			self.items = self.items | IT_NAILGUN;
-			self.items = self.items | IT_SUPER_NAILGUN;
-			self.items = self.items | IT_SUPER_SHOTGUN;
-			self.items = self.items | IT_ROCKET_LAUNCHER;
-//		self.items = self.items | IT_GRENADE_LAUNCHER;
-			self.items = self.items | IT_LIGHTNING;
-		}
-		self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR3;
-		self.armorvalue = 200;
-		self.armortype = 0.8;
-		self.health = 250;
-		self.items = self.items | IT_INVULNERABILITY;
-		self.invincible_time = 1;
-		self.invincible_finished = time + 3;
-	}
-
-	if (deathmatch == 5)
-	{
-		self.ammo_nails = 80;
-		self.ammo_shells = 30;
-		self.ammo_rockets = 10;
-		self.ammo_cells = 30;
-		self.items = self.items | IT_NAILGUN;
-		self.items = self.items | IT_SUPER_NAILGUN;
-		self.items = self.items | IT_SUPER_SHOTGUN;
-		self.items = self.items | IT_ROCKET_LAUNCHER;
-		self.items = self.items | IT_GRENADE_LAUNCHER;
-		self.items = self.items | IT_LIGHTNING;
-		self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR3;
-		self.armorvalue = 200;
-		self.armortype = 0.8;
-		self.health = 200;
-		self.items = self.items | IT_INVULNERABILITY;
-		self.invincible_time = 1;
-		self.invincible_finished = time + 3;
-	}
+// 	if (deathmatch == 4)
+// 	{
+// 		self.ammo_shells = 0;
+// 		if (stof(infokey(world, "axe")) == 0)
+// 		{
+// 			self.ammo_nails = 255;
+// 			self.ammo_shells = 255;
+// 			self.ammo_rockets = 255;
+// 			self.ammo_cells = 255;
+// 			self.items = self.items | IT_NAILGUN;
+// 			self.items = self.items | IT_SUPER_NAILGUN;
+// 			self.items = self.items | IT_SUPER_SHOTGUN;
+// 			self.items = self.items | IT_ROCKET_LAUNCHER;
+// //		self.items = self.items | IT_GRENADE_LAUNCHER;
+// 			self.items = self.items | IT_LIGHTNING;
+// 		}
+// 		self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR3;
+// 		self.armorvalue = 200;
+// 		self.armortype = 0.8;
+// 		self.health = 250;
+// 		self.items = self.items | IT_INVULNERABILITY;
+// 		self.invincible_time = 1;
+// 		self.invincible_finished = time + 3;
+// 	}
+// 
+// 	if (deathmatch == 5)
+// 	{
+// 		self.ammo_nails = 80;
+// 		self.ammo_shells = 30;
+// 		self.ammo_rockets = 10;
+// 		self.ammo_cells = 30;
+// 		self.items = self.items | IT_NAILGUN;
+// 		self.items = self.items | IT_SUPER_NAILGUN;
+// 		self.items = self.items | IT_SUPER_SHOTGUN;
+// 		self.items = self.items | IT_ROCKET_LAUNCHER;
+// 		self.items = self.items | IT_GRENADE_LAUNCHER;
+// 		self.items = self.items | IT_LIGHTNING;
+// 		self.items = self.items - (self.items & (IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3)) + IT_ARMOR3;
+// 		self.armorvalue = 200;
+// 		self.armortype = 0.8;
+// 		self.health = 200;
+// 		self.items = self.items | IT_INVULNERABILITY;
+// 		self.invincible_time = 1;
+// 		self.invincible_finished = time + 3;
+// 	}
 
 
 };

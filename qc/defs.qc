@@ -763,6 +763,14 @@ float		ATTACKER_TEAM			= 1;
 float		DEFFENDER_TEAM			= 2;
 float     OBSERVER						= 3;
 
+/*
+	STORM WEAPONS
+*/
+
+.float			storm_attack_finished1;
+.float			storm_attack_finished2;
+.float			storm_attack_finished3;
+.float			storm_semi;
 
 /*
 	STORM TIMER
