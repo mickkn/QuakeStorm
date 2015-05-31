@@ -283,11 +283,11 @@ float   MOVETYPE_BOUNCE                 = 10;
 float   MOVETYPE_BOUNCEMISSILE  = 11;   // bounce with extra size
 
 // edict.solid values
-float   SOLID_NOT                               = 0;    // no interaction with other objects
-float   SOLID_TRIGGER                   = 1;    // touch on edge, but not blocking
-float   SOLID_BBOX                              = 2;    // touch on edge, block
-float   SOLID_SLIDEBOX                  = 3;    // touch on edge, but not an onground
-float   SOLID_BSP                               = 4;    // bsp clip, touch on edge, block
+float   SOLID_NOT                               	= 0;    // no interaction with other objects
+float   SOLID_TRIGGER                   		= 1;    // touch on edge, but not blocking
+float   SOLID_BBOX                              	= 2;    // touch on edge, block
+float   SOLID_SLIDEBOX                  		= 3;    // touch on edge, but not an onground
+float   SOLID_BSP                              	 	= 4;    // bsp clip, touch on edge, block
 
 // range values
 float   RANGE_MELEE                             = 0;
@@ -297,10 +297,10 @@ float   RANGE_FAR                               = 3;
 
 // deadflag values
 
-float   DEAD_NO                                 = 0;
+float   DEAD_NO                                 	= 0;
 float   DEAD_DYING                              = 1;
 float   DEAD_DEAD                               = 2;
-float   DEAD_RESPAWNABLE                = 3;
+float   DEAD_RESPAWNABLE                	= 3;
 
 // takedamage values
 
@@ -309,33 +309,33 @@ float   DAMAGE_YES                              = 1;
 float   DAMAGE_AIM                              = 2;
 
 // items
-float   IT_AXE                                  = 4096;
+float   IT_AXE                                  		= 4096;
 float   IT_SHOTGUN                              = 1;
-float   IT_SUPER_SHOTGUN                = 2;
-float   IT_NAILGUN                              = 4;
-float   IT_SUPER_NAILGUN                = 8;
+float   IT_SUPER_SHOTGUN                	= 2;
+float   IT_NAILGUN                              	= 4;
+float   IT_SUPER_NAILGUN                		= 8;
 float   IT_GRENADE_LAUNCHER             = 16;
-float   IT_ROCKET_LAUNCHER              = 32;
-float   IT_LIGHTNING                    = 64;
-float   IT_EXTRA_WEAPON                 = 128;
+float   IT_ROCKET_LAUNCHER              	= 32;
+float   IT_LIGHTNING                    			= 64;
+float   IT_EXTRA_WEAPON                 	= 128;
 
-float   IT_SHELLS                               = 256;
-float   IT_NAILS                                = 512;
-float   IT_ROCKETS                              = 1024;
-float   IT_CELLS                                = 2048;
+float   IT_SHELLS                               	= 256;
+float   IT_NAILS                                		= 512;
+float   IT_ROCKETS                              	= 1024;
+float   IT_CELLS                                		= 2048;
 
-float   IT_ARMOR1                               = 8192;
-float   IT_ARMOR2                               = 16384;
-float   IT_ARMOR3                               = 32768;
-float   IT_SUPERHEALTH                  = 65536;
+float   IT_ARMOR1                               	= 8192;
+float   IT_ARMOR2                               	= 16384;
+float   IT_ARMOR3                               	= 32768;
+float   IT_SUPERHEALTH                  		= 65536;
 
-float   IT_KEY1                                 = 131072;
-float   IT_KEY2                                 = 262144;
+float   IT_KEY1                                 		= 131072;
+float   IT_KEY2                                 		= 262144;
 
-float   IT_INVISIBILITY                 = 524288;
-float   IT_INVULNERABILITY              = 1048576;
-float   IT_SUIT                                 = 2097152;
-float   IT_QUAD                                 = 4194304;
+float   IT_INVISIBILITY                 			= 524288;
+float   IT_INVULNERABILITY              		= 1048576;
+float   IT_SUIT                                 		= 2097152;
+float   IT_QUAD                                 	= 4194304;
 
 // point content values
 
@@ -760,17 +760,23 @@ float		MENU_OFF                	= 0;
 float		MENU_SELECT_TEAM		= 8; // Select your team
 float		MENU_SELECT_EXIT		= 9; // Exits the menu
 float		ATTACKER_TEAM			= 1;
-float		DEFFENDER_TEAM			= 2;
+float		DEFENDER_TEAM			= 2;
 float     OBSERVER						= 3;
 
 /*
 	STORM WEAPONS
 */
 
-.float			storm_attack_finished1;
-.float			storm_attack_finished2;
-.float			storm_attack_finished3;
+.float 		storm_attack_finished;
+.float 		storm_attack_flag;
+.float			storm_defend_finished1;
+.float			storm_defend_finished2;
+.float			storm_defend_finished3;
 .float			storm_semi;
+.float 		storm_defend_flag1;	
+.float 		storm_defend_flag2;	
+.float 		storm_defend_flag3;	
+.float 		storm_attack_flag;
 
 /*
 	STORM TIMER

@@ -2,21 +2,21 @@
 //Basically modified PutClientInServer to be more like an observer mode
 
 void() PutObserverInServer = {		//Koolio, Just like PutClientInServer
-	if (self.team != OBSERVER) {// if you already have a team  
-		PutClientInServer(); // And run the normal PutClientInServer
+	if ( self.team != OBSERVER ) {	// if you already have a team  
+		PutClientInServer(); 				// And run the normal PutClientInServer
 		centerprint (self, "You have a team");
-		return; // and forget the rest 
+		return; 
 	}
 	local	entity spot;
 
 	spot = SelectSpawnPoint ();
 
 	self.classname = "observer";
-	self.health = 666;			//Heh, just for fun
-	self.takedamage = DAMAGE_NO;  	//You can't take damage
-	self.solid = SOLID_NOT;       	//You're not solid (so you can't (be) telefrag(ged)
+	self.health = 666;									//Heh, just for fun
+	self.takedamage = DAMAGE_NO;  		//You can't take damage
+	self.solid = SOLID_NOT;      			 		//You're not solid (so you can't (be) telefrag(ged)
 	self.movetype = MOVETYPE_NOCLIP;	//You can move just like in noclipping mode
-	self.show_hostile = 0;			//The rest is pretty much the same as in PutClientInServer
+	self.show_hostile = 0;							//The rest is pretty much the same as in PutClientInServer
 	self.max_health = 666;
 	self.flags = FL_CLIENT;
 	self.super_damage_finished = 0;
@@ -26,9 +26,9 @@ void() PutObserverInServer = {		//Koolio, Just like PutClientInServer
 	self.effects = 0;
 	self.invincible_time = 0;
 
-	self.items = self.items - ( // take all of their stuff
-            IT_AXE | IT_SHOTGUN | IT_SUPER_SHOTGUN | IT_NAILGUN | IT_SUPER_NAILGUN 
-            | IT_GRENADE_LAUNCHER | IT_ROCKET_LAUNCHER | IT_KEY1 | IT_KEY2); 
+	self.items = 0;
+	self.ammo_shells = 0;
+	self.ammo_rockets = 0;
 
 	W_SetCurrentAmmo ();
 

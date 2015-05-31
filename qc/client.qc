@@ -456,7 +456,7 @@ entity() SelectSpawnPoint = {
 			}
 		}
 	}
-	else if ((deathmatch) && (self.team == DEFFENDER_TEAM)) // <-- changed that
+	else if ((deathmatch) && (self.team == DEFENDER_TEAM)) // <-- changed that
 	{
 		spot = lastspawn;
 		while (1)
@@ -593,14 +593,23 @@ void() PutClientInServer = {//Koolio,The normal putclientinserver
 	
 	//W_SetCurrentAmmo ();
 	// STORM weaps
+	if(self.team == DEFENDER_TEAM) {
+		self.items = 0;
+		self.items = IT_ROCKET_LAUNCHER;
+		self.ammo_rockets = 3;	// Deffends start with 3 rockets
+		self.ammo_shells = 0;
+		/* initialize the RL flag */
+		self.storm_defend_flag1 = 1;
+		self.storm_defend_flag2 = 1;
+		self.storm_defend_flag3 = 1;
+	}
 	if(self.team == ATTACKER_TEAM) {
-		self.items = self.items | IT_ROCKET_LAUNCHER;
-		self.ammo_rockets = 255;
+		self.items = 0;
+		self.items = IT_SHOTGUN;
+		self.ammo_shells = 1;		// Attackers start with 1 rail
+		self.ammo_rockets = 0;
 	}
 	
-	if(self.team == DEFFENDER_TEAM) {
-		self.ammo_shells =255;
-	}
 	self.attack_finished = time;
 	self.th_pain = player_pain;
 	self.th_die = PlayerDie;
@@ -1075,7 +1084,7 @@ void() PlayerPreThink =
 
 	if(time > self.attack_finished && self.currentammo == 0 && self.weapon != IT_AXE)
 	{
-		self.weapon = W_BestWeapon ();
+		//self.weapon = W_BestWeapon (); //disable axe
 		W_SetCurrentAmmo ();
 	}
 };

@@ -31,28 +31,28 @@ void() MainMenu =	//Koolio,The menu selection has an exit that is quite useless
 {
 	if (self.menu == MENU_SELECT_TEAM) {
 	        self.menu = MENU_SELECT_TEAM;
-	        centerprint (self, "   >Select team\n        Exit           ");
+	        centerprint (self, "   >SELECT TEAM\n        EXIT           ");
 	        return;
 	}
 	if (self.menu == MENU_SELECT_EXIT) {
 		self.menu = MENU_SELECT_EXIT;
-	    centerprint (self, "    Select team\n       >Exit           ");
+	    centerprint (self, "    SELECT TEAM\n       >EXIT           ");
 	    return;
 	}
 	if (self.menu == ATTACKER_TEAM) {
-		centerprint (self, "  Deffender\n>Attacker\n Observer");
+		centerprint (self, " DEFENDER\n>ATTACKER\n OBSERVER");
 	}
-	else if (self.menu == DEFFENDER_TEAM) {
-		centerprint (self, " >Deffender\n Attacker\n Observer");
+	else if (self.menu == DEFENDER_TEAM) {
+		centerprint (self, ">DEFENDER\n ATTACKER\n OBSERVER");
 	}
 	else if (self.menu == OBSERVER) {
-		centerprint (self, "  Deffender\n Attacker\n>Observer");
+		centerprint (self, " DEFENDER\n ATTACKER\n>OBSERVER");
 	}
 };
 
 void() MenuSelect = {	// selects the current menu item
 	if (self.menu == MENU_SELECT_TEAM) {
-        	self.menu = DEFFENDER_TEAM;
+        	self.menu = DEFENDER_TEAM;
             return;
     	}
     if (self.menu == MENU_SELECT_EXIT) {
@@ -70,7 +70,7 @@ void() MenuSelect = {	// selects the current menu item
         centerprint (self, "");               //Remove the menu
         MainMenu ();					
     }
-    else if (self.menu == DEFFENDER_TEAM) { 
+    else if (self.menu == DEFENDER_TEAM) { 
         self.team = self.menu;
         bprint (PRINT_HIGH, self.netname);
         bprint (PRINT_HIGH, " is joining the Deffending team\n");
@@ -99,12 +99,12 @@ void() MenuUp = { // scrolls through the menu
     	self.menu = MENU_SELECT_EXIT;
     else if (self.menu == MENU_SELECT_EXIT)
     	self.menu = MENU_SELECT_TEAM;
-    else if (self.menu == DEFFENDER_TEAM)
+    else if (self.menu == DEFENDER_TEAM)
         self.menu = OBSERVER;
     else if (self.menu == OBSERVER)
     	self.menu = ATTACKER_TEAM;
 	else if (self.menu == ATTACKER_TEAM)
-    	self.menu = DEFFENDER_TEAM;
+    	self.menu = DEFENDER_TEAM;
     MainMenu ();
 };
 
@@ -115,11 +115,11 @@ void() MenuDown = { //Same as menu up
         self.menu = MENU_SELECT_EXIT;
 	else if (self.menu == MENU_SELECT_EXIT)
 		self.menu = MENU_SELECT_TEAM;
-	else if (self.menu == DEFFENDER_TEAM)
+	else if (self.menu == DEFENDER_TEAM)
 		self.menu = ATTACKER_TEAM;
 	else if (self.menu == ATTACKER_TEAM)
     	self.menu = OBSERVER;
     else if (self.menu == OBSERVER)
-    	self.menu = DEFFENDER_TEAM;
+    	self.menu = DEFENDER_TEAM;
     MainMenu ();
 };

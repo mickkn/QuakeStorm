@@ -610,7 +610,7 @@ void() PlayerDie =
 	self.radsuit_finished = 0;
 	self.modelindex = modelindex_player;    // don't use eyes
 
-	DropBackpack();
+	//DropBackpack(); // we don't drop backpacks in STORM
 	
 	self.weaponmodel="";
 	self.view_ofs = '0 0 -8';
