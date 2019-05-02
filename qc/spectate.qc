@@ -107,5 +107,3 @@ void() SpectatorThink =
 	if (self.impulse)
 		SpectatorImpulseCommand();
 };
-
-

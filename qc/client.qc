@@ -92,14 +92,15 @@ void() SetChangeParms =
 
 void() SetNewParms =
 {
-	parm1 = IT_SHOTGUN | IT_AXE;
+	//parm1 = IT_SHOTGUN | IT_AXE;
+	parm1 = IT_AXE;
 	parm2 = 100;
 	parm3 = 0;
-	parm4 = 25;
+	parm4 = 0;
 	parm5 = 0;
 	parm6 = 0;
 	parm7 = 0;
-	parm8 = 1;
+	parm8 = 4096;
 	parm9 = 0;
 };
 
@@ -155,6 +156,7 @@ entity() FindIntermission =
 		return spot;
 	
 	objerror ("FindIntermission: no spot");
+	return 0;
 };
 
 
@@ -569,6 +571,7 @@ void() PutClientInServer = {//Koolio,The normal putclientinserver
 		PutObserverInServer(); // Run the observer func 
 		return; // and forget the rest 
 	}
+	
 	local   	entity spot;
 	local		string s;
 
@@ -594,24 +597,23 @@ void() PutClientInServer = {//Koolio,The normal putclientinserver
 	//W_SetCurrentAmmo ();
 	// STORM weaps
 	if(self.team == DEFENDER_TEAM) {
-		self.items = 0;
-		self.items = IT_ROCKET_LAUNCHER;
+		self.items = IT_ROCKET_LAUNCHER | IT_AXE;
 		self.ammo_rockets = 3;	// Deffends start with 3 rockets
 		self.ammo_shells = 0;
 		/* initialize the RL flag */
 		self.storm_defend_flag1 = 1;
 		self.storm_defend_flag2 = 1;
 		self.storm_defend_flag3 = 1;
-	}
-	if(self.team == ATTACKER_TEAM) {
-		self.items = 0;
-		self.items = IT_SHOTGUN;
-		self.ammo_shells = 1;		// Attackers start with 1 rail
+	} else if(self.team == ATTACKER_TEAM) {
+		self.items = IT_RAILGUN | IT_AXE;
+		self.ammo_cells = 1;		// Attackers start with 1 rail
 		self.ammo_rockets = 0;
 	}
 	
+	self.weaponmodel = "progs/v_axe.mdl"; // we don't have a shotgun anymore so v_model is not loaded
+	
 	self.attack_finished = time;
-	self.th_pain = player_pain;
+	//self.th_pain = player_pain;
 	self.th_die = PlayerDie;
 	
 	self.deadflag = DEAD_NO;
@@ -648,10 +650,12 @@ void() PutClientInServer = {//Koolio,The normal putclientinserver
 	spawn_tdeath (self.origin, self);
 
 	// Set Rocket Jump Modifiers
+	/*
 	if (stof(infokey(world, "rj")) != 0)
 	{                
 		rj = stof(infokey(world, "rj"));
 	}
+	*/
 
 // 	if (deathmatch == 4)
 // 	{
@@ -1042,6 +1046,12 @@ void() PlayerPreThink =
 		PutObserverInServer(); //Make me an observer
 	if (self.team != OBSERVER && self.classname != "player") //And vise versa
 		PutClientInServer();
+	
+	// Change team
+	if (self.old_team != self.team) {
+		self.old_team = self.team;
+		PutClientInServer();
+	}
 	
 	if (self.view_ofs == '0 0 0')
 		return;         // intermission or finale
@@ -1648,4 +1658,4 @@ void(entity targ, entity attacker) ClientObituary =
 			bprint (PRINT_MEDIUM," died\n");
 		}
 	}
-};
+};

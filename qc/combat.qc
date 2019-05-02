@@ -197,8 +197,10 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 			targ.velocity = targ.velocity + dir * damage * 8;
 		
 		// Rocket Jump modifiers
+		/*
 		if ( (rj > 1) & ((attacker.classname == "player") & (targ.classname == "player")) & ( attacker.netname == targ.netname)) 
 			targ.velocity = targ.velocity + dir * damage * rj;
+			*/
 
 	}
 
@@ -347,4 +349,3 @@ void(entity attacker, float damage) T_BeamDamage =
 		head = head.chain;
 	}
 };
-

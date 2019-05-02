@@ -123,7 +123,6 @@ SpawnMeatSpray
 void(vector org, vector vel) SpawnMeatSpray =
 {
 	local   entity missile;
-	local   vector  org;
 
 	missile = spawn ();
 	missile.owner = self;
@@ -367,15 +366,32 @@ void() W_FireSuperShotgun =
 };
 
 /*
-========================================================
- Storm
- 
- Weapons and functions for the DEFENDER
-========================================================
+==============================================================================
+
+ROCKETS
+
+==============================================================================
 */
 void() T_MissileTouch =
 {
 	local float     damg;
+
+//	if (deathmatch == 4)
+//	{
+//	if ( ((other.weapon == 32) || (other.weapon == 16)))
+//		{	
+//			if (random() < 0.1)
+//			{
+//				if (other != world)
+//				{
+//	//				bprint (PRINT_HIGH, "Got here\n");
+//					other.deathtype = "blaze";
+//					T_Damage (other, self, self.owner, 1000 );
+//					T_RadiusDamage (self, self.owner, 1000, other);
+//				}
+//			}
+//		}	
+//	}
 
 	if (other == self.owner)
 		return;         // don't explode on owner
@@ -383,7 +399,6 @@ void() T_MissileTouch =
 	if (self.voided) {
 		return;
 	}
-	
 	self.voided = 1;
 
 	if (pointcontents(self.origin) == CONTENT_SKY)
@@ -392,7 +407,7 @@ void() T_MissileTouch =
 		return;
 	}
 
-	damg = 100;
+	damg = 100 + random()*20;
 	
 	if (other.health)
 	{
@@ -426,8 +441,8 @@ W_FireRocket
 
 void() W_FireRocket =
 {
- 	if (deathmatch != 4)
- 		self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
+	if (deathmatch != 4)
+		self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
 	
 	sound (self, CHAN_WEAPON, "weapons/sgun1.wav", 1, ATTN_NORM);
 
@@ -442,15 +457,15 @@ void() W_FireRocket =
 // set newmis speed     
 
 	makevectors (self.v_angle);
-	newmis.velocity = aim(self, 600);
-	newmis.velocity = newmis.velocity * 600;
+	newmis.velocity = aim(self, 1000);
+	newmis.velocity = newmis.velocity * 1000;
 	newmis.angles = vectoangles(newmis.velocity);
 	
 	newmis.touch = T_MissileTouch;
 	newmis.voided = 0;
 	
 // set newmis duration
-	newmis.nextthink = time + 6;
+	newmis.nextthink = time + 5;
 	newmis.think = SUB_Remove;
 	newmis.classname = "rocket";
 
@@ -458,184 +473,6 @@ void() W_FireRocket =
 	setsize (newmis, '0 0 0', '0 0 0');             
 	setorigin (newmis, self.origin + v_forward*8 + '0 0 16');
 };
-
-/*
-========================================================
- Storm
- 
- Weapons and functions for the ATTACKER
-========================================================
-*/
-
-void() T_LaserBolt_Touch =
-{
-	local float     damg;
-
-	if (other == self.owner)
-		return;         // don't explode on owner
-
-	if (self.voided) {
-		return;
-	}
-	
-	self.voided = 1;
-
-	if (pointcontents(self.origin) == CONTENT_SKY)
-	{
-		remove(self);
-		return;
-	}
-
-	damg = 100;
-	
-	if (other.health)
-	{
-		other.deathtype = "rocket";
-		T_Damage (other, self, self.owner, damg );
-	}
-
-	// don't do radius damage to the other, because all the damage
-	// was done in the impact
-
-//  sound (self, CHAN_WEAPON, "weapons/r_exp3.wav", 1, ATTN_NORM);
-	self.origin = self.origin - 8 * normalize(self.velocity);
-
-	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
-	WriteByte (MSG_MULTICAST, TE_SPIKE);
-	WriteCoord (MSG_MULTICAST, self.origin_x);
-	WriteCoord (MSG_MULTICAST, self.origin_y);
-	WriteCoord (MSG_MULTICAST, self.origin_z);
-	multicast (self.origin, MULTICAST_PHS);
-
-	remove(self);
-};
-/*
-================
-W_FireLaser
-================
-*/
-
-void() W_FireLaser =
-{
- 	if (deathmatch != 4)
- 		self.currentammo = self.ammo_shells = self.ammo_shells - 1;
-	
-	sound (self, CHAN_WEAPON, "weapons/railgun.wav", 1, ATTN_NORM);
-
-	msg_entity = self;
-	WriteByte (MSG_ONE, SVC_SMALLKICK);
-
-	newmis = spawn ();
-	newmis.owner = self;
-	newmis.movetype = MOVETYPE_FLYMISSILE;
-	newmis.solid = SOLID_BBOX; // BBOX??
-		
-// set newmis speed     
-
-	makevectors (self.v_angle);
-	newmis.velocity = aim(self, 100000);
-	newmis.velocity = newmis.velocity * 100000;
-	newmis.angles = vectoangles(newmis.velocity);
-	
-	newmis.touch = T_LaserBolt_Touch;
-	newmis.voided = 0;
-	
-// set newmis duration
-	newmis.nextthink = time + 3;
-	newmis.think = SUB_Remove;
-	newmis.classname = "rocket";
-
-	setmodel (newmis, "progs/e_spike2.mdl");
-	setsize (newmis, '0 0 0', '0 0 0');             
-	setorigin (newmis, self.origin + v_forward*8 + '0 0 16');
-};
-
-
-// void () LaserBolt_Touch;
-// void () LaserBolt_Think = {
-//     self.solid = SOLID_TRIGGER;
-//     self.movetype = MOVETYPE_FLYMISSILE;
-//     self.velocity = self.oldorigin;
-//     self.touch = LaserBolt_Touch;
-//     setmodel(self, "progs/e_spike2.mdl");
-//     self.nextthink = time + 1;
-//     self.think = SUB_Remove;
-// };
-// 
-// /*
-// ================
-//  Laserbolt touch function. Just moves through the player and comes out
-//  the other side.
-// ================
-// */
-// 
-// void () LaserBolt_Touch = {
-//     local vector org;
-// 
-//     if (other == self.owner) {
-//         return;
-//     }
-//     if ((other == self.enemy) && (self.enemy != world)) {
-//         return;
-//     }
-// //    if (pointcontents(self.origin) == CONTENT_SKY) {
-// //        dremove(self);
-// //        return;
-// //    }
-//     org = self.origin - 8 * normalize(self.velocity);
-//     if (other.health) {
-//         SpawnBlood(org, 15);
-//         //other.deathtype = "rail"; //??
-// 		T_Damage (other, self, self.owner, 100 );
-//         self.velocity = self.oldorigin;
-//         self.owner = other;
-//         setmodel(self, string_null);
-//         self.touch = SUB_Null;
-//         self.nextthink = time + 0.1;
-//         self.think = LaserBolt_Think;
-//         return;
-//     } else {
-//         WriteByte(MSG_MULTICAST, SVC_TEMPENTITY);
-//         WriteByte(MSG_MULTICAST, TE_SPIKE);
-//         WriteCoord(MSG_MULTICAST, self.origin_x);
-//         WriteCoord(MSG_MULTICAST, self.origin_y);
-//         WriteCoord(MSG_MULTICAST, self.origin_z);
-//         multicast(self.origin, MULTICAST_PHS);
-//     }
-//     remove(self);
-// };
-// 
-// void () W_FireLaser = {
-//     local vector vec, org;
-// 
-// 	sound (self, CHAN_WEAPON, "weapons/railgun.wav", 1, ATTN_NORM);
-// 
-// 	self.currentammo = self.ammo_shells = self.ammo_shells - 1;
-// 	
-//     makevectors(self.v_angle);
-//     org = self.origin + v_forward * 8;
-//     vec = aim(self, 1000000);
-//     //vec = normalize(vec);
-// 
-//     newmis = spawn();
-//     newmis.owner = self;
-//     newmis.enemy = self;
-//     newmis.movetype = MOVETYPE_FLYMISSILE;
-//     newmis.solid = SOLID_TRIGGER;
-// 
-//     setmodel(newmis, "progs/e_spike1.mdl");
-//     setsize(newmis, '0 0 0', '0 0 0');
-// 
-//     setorigin(newmis, org + '0 0 16');
-// 
-//     newmis.velocity = vec * 1000000;
-//     newmis.angles = vectoangles(newmis.velocity);
-//     newmis.oldorigin = newmis.velocity;
-// 
-//     newmis.nextthink = time + 10;
-//     newmis.think = SUB_Remove;
-//     newmis.touch = LaserBolt_Touch;
-// };
 
 /*
 ===============================================================================
@@ -1113,6 +950,13 @@ void() W_SetCurrentAmmo =
 		self.weaponframe = 0;
 		self.items = self.items | IT_CELLS;
 	}
+	else if (self.weapon == IT_RAILGUN)
+	{
+		self.currentammo = self.ammo_cells;
+		self.weaponmodel = "progs/v_rail.mdl";
+		self.weaponframe = 0;
+		self.items = self.items | IT_CELLS;
+	}
 	else
 	{
 		self.currentammo = 0;
@@ -1207,16 +1051,11 @@ void() W_Attack =
 		else
 			player_axed1 ();
 	}
-	else if (self.weapon == IT_SHOTGUN) // STORM attack weap
+	else if (self.weapon == IT_SHOTGUN) 
 	{
-		if(!self.storm_semi) {
-			self.storm_semi = 1;
-			player_shot1 ();
-			self.attack_finished = time + 2;
-			self.storm_attack_finished = time + 2;
-			self.storm_attack_flag = 0;
-			W_FireLaser ();
-		}
+		player_shot1 ();
+		self.attack_finished = time + 0.5;
+		W_FireShotgun ();
 	}
 	else if (self.weapon == IT_SUPER_SHOTGUN)
 	{
@@ -1238,31 +1077,31 @@ void() W_Attack =
 		self.attack_finished = time + 0.6;
 		W_FireGrenade();
 	}
-	else if (self.weapon == IT_ROCKET_LAUNCHER)
+	else if (self.weapon == IT_ROCKET_LAUNCHER) // Storm Defence weap
 	{
 		if(!self.storm_semi && self.storm_defend_finished1 < time) {
 			player_rocket1();
 			self.storm_semi = 1;
 			self.storm_defend_flag1 = 0;
-			self.storm_defend_finished1 = time +3;
+			self.storm_defend_finished1 = time + 3;
 			self.attack_finished = time + 0.1;
-			W_FireRocket();
+			W_StormFireRocket();
 		}
 		else if(!self.storm_semi && self.storm_defend_finished2 < time) {
 			player_rocket1();
 			self.storm_semi = 1;
 			self.storm_defend_flag2 = 0;
-			self.storm_defend_finished2 = time +3;
+			self.storm_defend_finished2 = time + 3;
 			self.attack_finished = time + 0.1;
-			W_FireRocket();
+			W_StormFireRocket();
 		}
 		else if(!self.storm_semi && self.storm_defend_finished3 < time) {
 			player_rocket1();
 			self.storm_semi = 1;
 			self.storm_defend_flag3 = 0;
-			self.storm_defend_finished3 = time +3;
+			self.storm_defend_finished3 = time + 3;
 			self.attack_finished = time + 0.1;
-			W_FireRocket();
+			W_StormFireRocket();
 		}
 	}
 	else if (self.weapon == IT_LIGHTNING)
@@ -1270,6 +1109,19 @@ void() W_Attack =
 		self.attack_finished = time + 0.1;
 		sound (self, CHAN_AUTO, "weapons/lstart.wav", 1, ATTN_NORM);
 		player_light1();
+	}
+	else if(self.weapon == IT_RAILGUN) // STORM attack weap
+	{
+		
+		if(!self.storm_semi) {
+			self.storm_semi = 1;
+			player_shot1 ();
+			self.attack_finished = time + 2;
+			self.storm_attack_finished = time + 2;
+			self.storm_attack_flag = 0;
+			W_StormFireSlugs ();
+			
+		}
 	}
 };
 
@@ -1332,6 +1184,12 @@ void() W_ChangeWeapon =
 		if (self.ammo_cells < 1)
 			am = 1;
 	}
+	else if (self.impulse == 9)
+	{
+		fl = IT_RAILGUN;
+		if (self.ammo_cells < 1)
+			am = 1;
+	}
 
 	self.impulse = 0;
 	
@@ -1358,7 +1216,7 @@ void() W_ChangeWeapon =
 ============
 CheatCommand
 ============
-*/
+
 void() CheatCommand =
 {
 //      if (deathmatch || coop)
@@ -1383,7 +1241,7 @@ void() CheatCommand =
 	self.weapon = IT_ROCKET_LAUNCHER;
 	self.impulse = 0;
 	W_SetCurrentAmmo ();
-};
+};*/
 
 /*
 ============
@@ -1556,11 +1414,9 @@ ImpulseCommands
 */
 void() ImpulseCommands =
 {
-	if (self.impulse >= 1 && self.impulse <= 8)
+	if (self.impulse >= 1 && self.impulse <= 9)
 		W_ChangeWeapon ();
 
-	if (self.impulse == 9)
-		CheatCommand ();
 	if (self.impulse == 10)
 		CycleWeaponCommand ();
 	if (self.impulse == 11)
@@ -1590,26 +1446,40 @@ void() W_WeaponFrame =
 	if (time < self.attack_finished)
 		return;
 	
-	if(!self.storm_attack_flag && self.storm_attack_finished < time) {
+	if(!self.storm_attack_flag && self.storm_attack_finished < time) 
+	{
 		self.storm_attack_flag = 1;
-		self.currentammo = self.ammo_shells = self.ammo_shells + 1;
+		self.ammo_cells = self.ammo_cells + 1;
 	}
 	
 	/*	 STORM add rocket to the ammo when ready again */
-	if(!self.storm_defend_flag1 && self.storm_defend_finished1 < time) {
-		self.currentammo = self.ammo_rockets = self.ammo_rockets + 1;
+	if(!self.storm_defend_flag1 && self.storm_defend_finished1 < time) 
+	{
+		self.ammo_rockets = self.ammo_rockets + 1;
 		self.storm_defend_flag1 = 1;	// prevent full ammo box
 	}
-	if(!self.storm_defend_flag2 && self.storm_defend_finished2 < time) {
+	if(!self.storm_defend_flag2 && self.storm_defend_finished2 < time) 
+	{
 		self.ammo_rockets = self.ammo_rockets + 1;
 		self.storm_defend_flag2 = 1; // prevent full ammo box
 	}
-	if(!self.storm_defend_flag3 && self.storm_defend_finished3 < time) {
+	if(!self.storm_defend_flag3 && self.storm_defend_finished3 < time) 
+	{
 		self.ammo_rockets = self.ammo_rockets + 1;
 		self.storm_defend_flag3 = 1; // prevent full ammo box
 	}
 	
 	ImpulseCommands ();
+	
+	// Update new hud, when auto recharging weapons
+	if(self.weapon == IT_ROCKET_LAUNCHER)
+	{
+		self.currentammo = self.ammo_rockets;
+	} else if(self.weapon == IT_RAILGUN) 
+	{
+		self.currentammo = self.ammo_cells;
+	}
+	
 	
 	/* check for attack release*/
 	if(!self.button0) {

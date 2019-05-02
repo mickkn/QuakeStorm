@@ -25,7 +25,10 @@
 
 */
 
-entity stemp, otemp, s, old;
+//entity stemp;
+//entity otemp;
+entity s;
+//entity old;
 
 
 void() trigger_reactivate =

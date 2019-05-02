@@ -178,6 +178,8 @@ void() main =
 	precache_file2 ("maps/dm4.bsp");
 	precache_file2 ("maps/dm5.bsp");
 	precache_file2 ("maps/dm6.bsp");
+	
+	precache_sound ("ogre/ogdrag.wav");
 };
 
 
@@ -307,6 +309,7 @@ void() worldspawn =
 	precache_model ("progs/v_shot2.mdl");
 	precache_model ("progs/v_nail2.mdl");
 	precache_model ("progs/v_rock2.mdl");
+	precache_model ("progs/v_rail.mdl");
 
 /* 
 	==========
@@ -436,6 +439,4 @@ void(entity ent) CopyToBodyQue =
 	setorigin (bodyque_head, ent.origin);
 	setsize (bodyque_head, ent.mins, ent.maxs);
 	bodyque_head = bodyque_head.owner;
-};
-
-
+};
