@@ -758,6 +758,7 @@ float	OBSERVER					= 3;
 
 .float 		storm_attack_finished;
 .float 		storm_attack_flag;
+
 .float		storm_defend_finished1;
 .float		storm_defend_finished2;
 .float		storm_defend_finished3;
@@ -765,7 +766,6 @@ float	OBSERVER					= 3;
 .float 		storm_defend_flag1;	
 .float 		storm_defend_flag2;	
 .float 		storm_defend_flag3;	
-.float 		storm_attack_flag;
 
 /*
 	STORM OTHERS

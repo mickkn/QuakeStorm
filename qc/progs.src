@@ -5,8 +5,8 @@ subs.qc
 storm_menu.qc
 combat.qc
 items.qc
-storm_weapons.qc
 weapons.qc
+storm_weapons.qc
 world.qc
 timer.qc
 client.qc

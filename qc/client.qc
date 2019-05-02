@@ -446,7 +446,8 @@ entity() SelectSpawnPoint = {
 				thing = findradius(spot.origin, 32);
 				while(thing)
 				{
-					if (thing.classname == "player")
+					//if (thing.classname == "player")
+					if ((thing.classname == "player") && (thing != self) && (thing.health > 0))
 						pcount = pcount + 1;
 					thing = thing.chain;
 				}
@@ -472,7 +473,8 @@ entity() SelectSpawnPoint = {
 				thing = findradius(spot.origin, 32);
 				while(thing)
 				{
-					if (thing.classname == "player")
+					//if (thing.classname == "player")
+					if ((thing.classname == "player") && (thing != self) && (thing.health > 0))
 						pcount = pcount + 1;
 					thing = thing.chain;
 				}
@@ -1579,6 +1581,14 @@ void(entity targ, entity attacker) ClientObituary =
 						deathstring2 = "'s discharge\n";
 					else
 						deathstring2 = "'s shaft\n";
+				}
+				else if (rnum == IT_RAILGUN)
+				{
+					deathstring = " accepts ";
+					if (attacker.waterlevel > 1)
+						deathstring2 = "'s slugs\n";
+					else
+						deathstring2 = "'s railgun\n";
 				}
 				bprint (PRINT_MEDIUM,targ.netname);
 				bprint (PRINT_MEDIUM,deathstring);

@@ -31,6 +31,8 @@ void(entity bomb, entity attacker, float rad, entity ignore, string dtype) T_Rad
 void(vector org, float damage) SpawnBlood;
 void() SuperDamageSound;
 
+void() W_StormFireSlugs;
+void() W_StormFireRocket;
 
 // called by worldspawn
 void() W_Precache =
@@ -335,7 +337,7 @@ void() W_FireShotgun =
 		self.currentammo = self.ammo_shells = self.ammo_shells - 1;
 
 	dir = aim (self, 100000);
-	FireBullets (6, dir, '0.04 0.04 0');
+	FireBullets (4, dir, '0.04 0.04 0');
 };
 
 
