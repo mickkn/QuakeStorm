@@ -1584,11 +1584,8 @@ void(entity targ, entity attacker) ClientObituary =
 				}
 				else if (rnum == IT_RAILGUN)
 				{
-					deathstring = " accepts ";
-					if (attacker.waterlevel > 1)
-						deathstring2 = "'s slugs\n";
-					else
-						deathstring2 = "'s railgun\n";
+					deathstring = " disappeared by ";
+					deathstring2 = "'s railgun slug\n";
 				}
 				bprint (PRINT_MEDIUM,targ.netname);
 				bprint (PRINT_MEDIUM,deathstring);

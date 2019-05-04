@@ -6,78 +6,59 @@ Storm Weapon Functions
 ===============================================================================
 */
 
-
-
-
 /*
 ========================================
 
 Railgun
 
 * Auto recharge 1 slug
-* Railshot (instant kill)
+* Railshot a lot of damage
 
 ========================================
 */
-void() T_StormRailgunTouch=
-{
-
-};
-
-void() StormRailgunThink=
-{
-
-};
-
-void(float shotcount, vector dir, vector spread) FireBullets;
-
 
 void(float damage, vector dir) TraceAttack;
 void() ClearMultiDamage;
 void() ApplyMultiDamage;
 void() Multi_Finish;
 
+// Shotgun modified with some lightning strike :)
 void(float shotcount, vector dir, vector spread) FireSlugs =
 {
-	/*
-	local   vector direction;
-    local vector src;
-
-    makevectors (self.v_angle);
-    src = self.origin + v_forward * 10;
-    src_z = self.absmin_z + self.size_z * 0.7;
-    ClearMultiDamage ();
-
-    traceline (src, src + direction * 4096, FALSE, self);
-    if (trace_fraction != 1)
-	TraceAttack (50, direction);
-
-    ApplyMultiDamage ();
-	Multi_Finish ();
-	*/
+	local vector org;
+	local vector src;
 	
-	local   vector direction;
-	local   vector  src;
+	local float dmg = 100;
 	
-	makevectors(self.v_angle);
+	//makevectors(self.v_angle);
 
-	src = self.origin + v_forward*10;
-	src_z = self.absmin_z + self.size_z * 0.7;
+	src = self.origin + v_forward*10;	
+	src_z = self.size_z;				// Hit on crosshair
 
 	ClearMultiDamage ();
 
 	traceline (src, src + dir*2048, FALSE, self);
-	puff_org = trace_endpos - dir*4;
-
-	while (shotcount > 0)
+	if (trace_fraction != 1.0)
 	{
-		direction = dir;// + crandom()*spread_x*v_right + crandom()*spread_y*v_up;
-		traceline (src, src + direction*2048, FALSE, self);
-		if (trace_fraction != 1.0)
-			TraceAttack (100, direction);
-
-		shotcount = shotcount - 1;
+		TraceAttack (dmg, dir);
 	}
+
+	puff_org = trace_endpos;	// Make a spark on the wall
+
+	org = self.origin + '0 0 0';
+	
+	// Draw trace using shaft model
+	WriteByte (MSG_MULTICAST, SVC_TEMPENTITY);
+	WriteByte (MSG_MULTICAST, TE_LIGHTNING2);
+	WriteEntity (MSG_MULTICAST, self);
+	WriteCoord (MSG_MULTICAST, org_x);
+	WriteCoord (MSG_MULTICAST, org_y);
+	WriteCoord (MSG_MULTICAST, org_z);
+	WriteCoord (MSG_MULTICAST, trace_endpos_x);
+	WriteCoord (MSG_MULTICAST, trace_endpos_y);
+	WriteCoord (MSG_MULTICAST, trace_endpos_z);
+	multicast (org, MULTICAST_PHS);
+
 	ApplyMultiDamage ();
 	Multi_Finish ();
 	
@@ -169,7 +150,7 @@ void(entity inflictor, entity attacker, float damage, entity ignore, string dtyp
 
 void() T_StormRocketTouch =
 {
-	local float     damg;
+	local float     dmg;
 
 	if (other == self.owner) {
 		return;         	// don't explode on owner
@@ -187,12 +168,12 @@ void() T_StormRocketTouch =
 		return;
 	}
 
-	damg = 100;
+	dmg = 100;
 	
 	if (other.health)
 	{
 		other.deathtype = "rocket";
-		T_Damage (other, self, self.owner, damg );
+		T_Damage (other, self, self.owner, dmg );
 	}
 
 	// don't do radius damage to the other, because all the damage
