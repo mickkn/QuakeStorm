@@ -715,6 +715,7 @@ string(entity e, string key) infokey    								= #80;  // get a key value (worl
 float(string s) stof                            						= #81;	// convert string to float
 void(vector where, float set) multicast 								= #82;  // sends the temp message to a set
 																				// of clients, possibly in PVS or PHS
+string(float num) argv																= #83;	// parse ClientCommand arguments
 
 //============================================================================
 

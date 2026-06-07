@@ -1334,7 +1334,10 @@ void() ClientConnect =
 	bprint (PRINT_HIGH, " entered the game\n");
 	// STORM welcome message and observer
 	self.team = OBSERVER;
-	centerprint(self, "Welcome to STORM!");
+	centerprint(self,
+	    "Welcome to STORM!\n"
+	    "Use impulse 20 to see the menu\n"
+    );
 	
 // a client connecting during an intermission can cause problems
 	if (intermission_running)
@@ -1665,4 +1668,10 @@ void(entity targ, entity attacker) ClientObituary =
 			bprint (PRINT_MEDIUM," died\n");
 		}
 	}
-};
+};
+
+void() ClientCommand =
+{
+	if (argv(0) == "storm_menu")
+		MenuToggle();
+};
